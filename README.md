@@ -1,2 +1,3 @@
 # microsmackv2
-Simple brigade demo
+
+This is a simple web app/api for a brigade demo.
