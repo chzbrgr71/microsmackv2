@@ -27,10 +27,10 @@ spec:
     spec:
       containers:
       - name: smackweb
-        image: chzbrgr71/smackweb
+        image: briaracr.azurecr.io/chzbrgr71/smackweb:v3
         env:
         - name: API_SERVICE
-          value: "smackapi.microsmack.svc.cluster.local"
+          value: "smackapi.default.svc.cluster.local"
         - name: API_PORT
           value: "8081"
         - name: KUBE_NODE_NAME

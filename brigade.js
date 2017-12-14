@@ -65,7 +65,7 @@ events.on("pull_request", (brigadeEvent, project) => {
     var slack = new Job("slack-notify", "technosophos/slack-notify:latest", ["/slack-notify"])
     goJobRunner(golang)
     dockerJobRunner(brigConfig, docker)
-    helmJobRunner(brigConfig, helm, 10, 90, "new")
+    helmJobRunner(brigConfig, helm, "new")
     slackJob(slack, project.secrets.slackWebhook, `brigade pipeline starting for ${brigConfig.get("branch")} with commit ID ${brigConfig.get("gitSHA")}\ncanary testing starting via istio\nplease review analytics`)
 
     // start pipeline
@@ -85,7 +85,7 @@ events.on("after", (event, proj) => {
     slack.storage.enabled = false
     slack.env = {
       SLACK_WEBHOOK: proj.secrets.slackWebhook,
-      SLACK_USERNAME: "brigade @ kubecon",
+      SLACK_USERNAME: "brigade-demo",
       SLACK_MESSAGE: "brigade pipeline finished successfully",
       SLACK_COLOR: "#ff0000"
     }
@@ -123,13 +123,12 @@ function dockerJobRunner(config, d) {
     ]
 }
 
-function helmJobRunner (config, h, prodWeight, canaryWeight, deployType) {
+function helmJobRunner (config, h, deployType) {
     h.storage.enabled = false
     h.image = "lachlanevenson/k8s-helm:2.7.0"
     h.tasks = [
         "cd /src/",
-        `helm upgrade --install smackapi-${deployType} ./charts/smackapi --namespace microsmack --set api.image=${config.get("apiACRImage")} --set api.imageTag=${config.get("imageTag")} --set api.deployment=smackapi-${deployType} --set api.versionLabel=${deployType}`,
-        `helm upgrade --install microsmack-routes ./charts/routes --namespace microsmack --set prodLabel=prod --set prodWeight=${prodWeight} --set canaryLabel=new --set canaryWeight=${canaryWeight}`
+        `helm upgrade --install smackapi-${deployType} ./charts/smackapi --set api.image=${config.get("apiACRImage")} --set api.imageTag=${config.get("imageTag")} --set api.deployment=smackapi-${deployType} --set api.versionLabel=${deployType}`
     ]
 }
 
@@ -137,7 +136,7 @@ function slackJob (s, webhook, message) {
     s.storage.enabled = false
     s.env = {
       SLACK_WEBHOOK: webhook,
-      SLACK_USERNAME: "brigade @ kubecon",
+      SLACK_USERNAME: "brigade-demo",
       SLACK_MESSAGE: message,
       SLACK_COLOR: "#0000ff"
     }
