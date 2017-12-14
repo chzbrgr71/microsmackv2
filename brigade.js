@@ -83,6 +83,7 @@ events.on("after", (event, proj) => {
 
     var slack = new Job("slack-notify", "technosophos/slack-notify:latest", ["/slack-notify"])
     slack.storage.enabled = false
+    slack.host = "aci-connector"
     slack.env = {
       SLACK_WEBHOOK: proj.secrets.slackWebhook,
       SLACK_USERNAME: "brigade-demo",
@@ -97,6 +98,7 @@ function goJobRunner(g) {
     // define job for golang work
     g.storage.enabled = false
     g.image = "golang:1.7.5"
+    g.host = "aci-connector"
     g.tasks = [
         "cd /src/",
         "go get github.com/gorilla/mux",
