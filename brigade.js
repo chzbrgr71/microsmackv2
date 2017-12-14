@@ -24,8 +24,8 @@ events.on("push", (brigadeEvent, project) => {
     var slack = new Job("slack-notify", "technosophos/slack-notify:latest", ["/slack-notify"])
     goJobRunner(golang)
     dockerJobRunner(brigConfig, docker)
-    helmJobRunner(brigConfig, helm, 100, 0, "prod")
-    slackJob(slack, project.secrets.slackWebhook, `brigade pipeline starting for ${brigConfig.get("branch")} with commit ID ${brigConfig.get("gitSHA")}\ndeploying to prod and removing canary test via istio rules`)
+    helmJobRunner(brigConfig, helm, "prod")
+    slackJob(slack, project.secrets.slackWebhook, `brigade pipeline starting for ${brigConfig.get("branch")} with commit ID ${brigConfig.get("gitSHA")}\ndeploying to prod`)
 
     // start pipeline
     console.log(`==> starting pipeline for docker image: ${brigConfig.get("apiACRImage")}:${brigConfig.get("imageTag")}`)
